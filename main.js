@@ -6,9 +6,9 @@ canvas.height = window.innerHeight * 0.9;
 const ctx = canvas.getContext('2d');
 
 // Количество каждого типа мячей
-const ballCountK = 2;
-const ballCountN = 2;
-const ballCountB = 2;
+const ballCountK = 5;
+const ballCountN = 5;
+const ballCountB = 5;
 
 // Скорость мячей
 let speed = 1;
