@@ -1,24 +1,61 @@
 // Создание холста
 const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = window.innerWidth * 0.9;
+canvas.height = window.innerHeight * 0.9;
 const ctx = canvas.getContext('2d');
 
 // Количество каждого типа мячей
-const ballCountK = 10;
-const ballCountN = 10;
-const ballCountB = 10;
+const ballCountK = 2;
+const ballCountN = 2;
+const ballCountB = 2;
+
+// Скорость мячей
+let speed = 1;
+
+// Создание кнопок для управления скоростью
+const increaseSpeedButton = document.createElement('button');
+increaseSpeedButton.textContent = 'Increase speed';
+// document.body.append(increaseSpeedButton);
+
+const decreaseSpeedButton = document.createElement('button');
+decreaseSpeedButton.textContent = 'Decrease speed';
+// document.body.append(decreaseSpeedButton);
+
+// Обновляем множитель скорости при изменении скорости
+increaseSpeedButton.addEventListener('click', () => {
+  speed += 0.01;
+  balls.forEach(ball => {
+    ball.originalDx *= speed;
+    ball.originalDy *= speed;
+    updateBall(ball);
+  });
+});
+
+decreaseSpeedButton.addEventListener('click', () => {
+  speed = Math.max(0.1, speed - 0.01);
+  balls.forEach(ball => {
+    ball.originalDx *= speed;
+    ball.originalDy *= speed;
+    updateBall(ball);
+  });
+});
 
 // Функция для создания мяча
-const createBall = (letter) => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    dx: (Math.random() - 0.5) * 10,
-    dy: (Math.random() - 0.5) * 10,
-    radius: 15,
-    letter: letter,
-});
+const createBall = (letter) => {
+  const dx = (Math.random() - 0.5) * 10;
+  const dy = (Math.random() - 0.5) * 10;
+  return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      dx,
+      dy,
+      originalDx: dx, // сохраняем исходное значение dx
+      originalDy: dy, // сохраняем исходное значение dy
+      radius: 30,
+      letter,
+  };
+};
 
 // Функция для отрисовки мяча
 const drawBall = (ball) => {
@@ -34,9 +71,20 @@ const drawBall = (ball) => {
 
 // Функция для обновления мяча
 const updateBall = (ball) => {
-    const dx = ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius ? -ball.dx : ball.dx;
-    const dy = ball.y + ball.dy > canvas.height - ball.radius || ball.y + ball.dy < ball.radius ? -ball.dy : ball.dy;
-    return { ...ball, dx, dy, x: ball.x + dx, y: ball.y + dy };
+  let dx = ball.originalDx * speed;
+  let dy = ball.originalDy * speed;
+
+  if (ball.x + dx > canvas.width - ball.radius || ball.x + dx < ball.radius) {
+      dx = -dx;
+      ball.originalDx = dx / speed;
+  }
+
+  if (ball.y + dy > canvas.height - ball.radius || ball.y + dy < ball.radius) {
+      dy = -dy;
+      ball.originalDy = dy / speed;
+  }
+
+  return { ...ball, dx, dy, x: ball.x + dx, y: ball.y + dy };
 };
 
 // Функция для проверки пересечения мячей
