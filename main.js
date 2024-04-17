@@ -31,21 +31,31 @@ const ballCountDisplayK = document.querySelector('.ball-count-display-k');
 const ballCountDisplayN = document.querySelector('.ball-count-display-n');
 const ballCountDisplayB = document.querySelector('.ball-count-display-b');
 
-let initBallCountK = ballCountSelectK.value;
-let initBallCountN = ballCountSelectN.value;
-let initBallCountB = ballCountSelectB.value;
-let ballCountK = initBallCountK;
-let ballCountN = initBallCountN;
-let ballCountB = initBallCountB;
+let ballCountK = ballCountSelectK.value;
+let ballCountN = ballCountSelectN.value;
+let ballCountB = ballCountSelectB.value;
+
+const saveDataToURL = ({ speed, K, N, B, icons }) => {
+  const params = new URLSearchParams(window.location.search);
+  if (speed) params.set('speed', speed);
+  if (K) params.set('K', K);
+  if (N) params.set('N', N);
+  if (B) params.set('B', B);
+  if (icons) params.set('icons', useIconsRadio.checked);
+  window.history.replaceState({}, '', '?' + params.toString());
+}
 
 ballCountSelectK.onchange = () => {
-  initBallCountK = parseInt(ballCountSelectK.value);
+  ballCountK = parseInt(ballCountSelectK.value);
+  saveDataToURL({K: ballCountK});
 };
 ballCountSelectN.onchange = () => {
-  initBallCountN = parseInt(ballCountSelectN.value);
+  ballCountN = parseInt(ballCountSelectN.value);
+  saveDataToURL({N: ballCountN});
 };
 ballCountSelectB.onchange = () => {
-  initBallCountB = parseInt(ballCountSelectB.value);
+  ballCountB = parseInt(ballCountSelectB.value);
+  saveDataToURL({B: ballCountB});
 };
 
 increaseSpeedButton.addEventListener('click', () => {
@@ -55,6 +65,7 @@ increaseSpeedButton.addEventListener('click', () => {
   }
   increaseSpeedButton.disabled = speed === maxSpeed;
   decreaseSpeedButton.disabled = speed === minSpeed;
+  saveDataToURL({speed});
 });
 
 decreaseSpeedButton.addEventListener('click', () => {
@@ -64,6 +75,7 @@ decreaseSpeedButton.addEventListener('click', () => {
   }
   increaseSpeedButton.disabled = speed === maxSpeed;
   decreaseSpeedButton.disabled = speed === minSpeed;
+  saveDataToURL({speed});
 });
 
 const createBall = letter => {
@@ -83,10 +95,42 @@ const createBall = letter => {
   };
 };
 
+useIconsRadio.onchange = () => saveDataToURL({icons: true});
+useCirclesRadio.onchange = () => saveDataToURL({icons: true});
+
+const loadDataFromURL = () => {
+  const params = new URLSearchParams(window.location.search);
+  speed = params.get('speed') || speed || 3;
+  if (speed < minSpeed) speed = minSpeed;
+  if (speed > maxSpeed) speed = maxSpeed;
+  ballCountK = params.get('K') || ballCountK || 2;
+  if (ballCountK < 1) ballCountK = 1;
+  if (ballCountK > 10) ballCountK = 10;
+  ballCountN = params.get('N') || ballCountN || 2;
+  if (ballCountN < 1) ballCountN = 1;
+  if (ballCountN > 10) ballCountN = 10;
+  ballCountB = params.get('B') || ballCountB || 2;
+  if (ballCountB < 1) ballCountB = 1;
+  if (ballCountB > 10) ballCountB = 10;
+  useIconsRadio.checked = params.get('icons') === 'true';
+
+  ballCountSelectK.value = ballCountK;
+  ballCountSelectN.value = ballCountN;
+  ballCountSelectB.value = ballCountB;
+
+  ballCountDisplayK.textContent = ballCountK;
+  ballCountDisplayN.textContent = ballCountN;
+  ballCountDisplayB.textContent = ballCountB;
+
+  speedValue.textContent = speed;
+}
+
+loadDataFromURL();
+
 let balls = [
-  ...Array.from({ length: initBallCountK }, () => createBall('К')),
-  ...Array.from({ length: initBallCountN }, () => createBall('Н')),
-  ...Array.from({ length: initBallCountB }, () => createBall('Б'))
+  ...Array.from({ length: ballCountK }, () => createBall('К')),
+  ...Array.from({ length: ballCountN }, () => createBall('Н')),
+  ...Array.from({ length: ballCountB }, () => createBall('Б'))
 ];
 
 const paper = new Image();
@@ -238,9 +282,9 @@ restartButton.addEventListener('click', () => {
   cancelAnimationFrame(canvasId);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ballCountK = initBallCountK;
-  ballCountN = initBallCountN;
-  ballCountB = initBallCountB;
+  ballCountK = ballCountSelectK.value;
+  ballCountN = ballCountSelectN.value;
+  ballCountB = ballCountSelectB.value;
   speed = 3;
 
   ballCountDisplayK.textContent = ballCountK;
@@ -252,10 +296,11 @@ restartButton.addEventListener('click', () => {
   decreaseSpeedButton.disabled = false;
 
   balls = [
-    ...Array.from({ length: initBallCountK }, () => createBall('К')),
-    ...Array.from({ length: initBallCountN }, () => createBall('Н')),
-    ...Array.from({ length: initBallCountB }, () => createBall('Б'))
+    ...Array.from({ length: ballCountK }, () => createBall('К')),
+    ...Array.from({ length: ballCountN }, () => createBall('Н')),
+    ...Array.from({ length: ballCountB }, () => createBall('Б'))
   ];
 
+  saveDataToURL({speed, K: ballCountK, N: ballCountN, B: ballCountB, icons: true});
   draw();
 });
