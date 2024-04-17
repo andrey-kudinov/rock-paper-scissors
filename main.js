@@ -9,12 +9,12 @@ const ctx = canvas.getContext('2d');
 let canvasId;
 
 // JavaScript
-const radius = Math.min(window.innerWidth, window.innerHeight) * 0.03;
+const radius = window.innerWidth > 600 ? 30 : 10;
 
 let speed = 3;
 const maxSpeed = 5;
 const minSpeed = 1;
-const speedMultiplier = 0.5;
+const speedMultiplier = window.innerWidth > 600 ? 0.5 : 0.25;
 
 const increaseSpeedButton = document.querySelector('.increase-speed-button');
 const decreaseSpeedButton = document.querySelector('.decrease-speed-button');
@@ -140,7 +140,7 @@ canvas.addEventListener('click', event => {
   balls.forEach(ball => {
     const distance = Math.hypot(ball.x - x, ball.y - y);
 
-    if (distance - ball.radius < 10) {
+    if (distance - ball.radius < radius) {
       const oldLetter = ball.letter;
       const currentIndex = letters.indexOf(oldLetter);
       const nextIndex = (currentIndex + 1) % letters.length;
