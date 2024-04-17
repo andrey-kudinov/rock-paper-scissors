@@ -31,9 +31,13 @@ const ballCountDisplayK = document.querySelector('.ball-count-display-k');
 const ballCountDisplayN = document.querySelector('.ball-count-display-n');
 const ballCountDisplayB = document.querySelector('.ball-count-display-b');
 
-let ballCountK = ballCountSelectK.value;
-let ballCountN = ballCountSelectN.value;
-let ballCountB = ballCountSelectB.value;
+let initBallCountK = ballCountSelectK.value;
+let initBallCountN = ballCountSelectN.value;
+let initBallCountB = ballCountSelectB.value;
+
+let ballCountK = initBallCountK;
+let ballCountN = initBallCountN;
+let ballCountB = initBallCountB;
 
 const saveDataToURL = ({ speed, K, N, B, icons }) => {
   const params = new URLSearchParams(window.location.search);
@@ -46,16 +50,16 @@ const saveDataToURL = ({ speed, K, N, B, icons }) => {
 }
 
 ballCountSelectK.onchange = () => {
-  ballCountK = parseInt(ballCountSelectK.value);
-  saveDataToURL({K: ballCountK});
+  initBallCountK = parseInt(ballCountSelectK.value);
+  saveDataToURL({K: initBallCountK});
 };
 ballCountSelectN.onchange = () => {
-  ballCountN = parseInt(ballCountSelectN.value);
-  saveDataToURL({N: ballCountN});
+  initBallCountN = parseInt(ballCountSelectN.value);
+  saveDataToURL({N: initBallCountN});
 };
 ballCountSelectB.onchange = () => {
-  ballCountB = parseInt(ballCountSelectB.value);
-  saveDataToURL({B: ballCountB});
+  initBallCountB = parseInt(ballCountSelectB.value);
+  saveDataToURL({B: initBallCountB});
 };
 
 increaseSpeedButton.addEventListener('click', () => {
@@ -285,15 +289,10 @@ restartButton.addEventListener('click', () => {
   ballCountK = ballCountSelectK.value;
   ballCountN = ballCountSelectN.value;
   ballCountB = ballCountSelectB.value;
-  speed = 3;
 
   ballCountDisplayK.textContent = ballCountK;
   ballCountDisplayN.textContent = ballCountN;
   ballCountDisplayB.textContent = ballCountB;
-  speedValue.textContent = speed;
-
-  increaseSpeedButton.disabled = false;
-  decreaseSpeedButton.disabled = false;
 
   balls = [
     ...Array.from({ length: ballCountK }, () => createBall('К')),
@@ -301,6 +300,6 @@ restartButton.addEventListener('click', () => {
     ...Array.from({ length: ballCountB }, () => createBall('Б'))
   ];
 
-  saveDataToURL({speed, K: ballCountK, N: ballCountN, B: ballCountB, icons: true});
+  saveDataToURL({K: ballCountK, N: ballCountN, B: ballCountB});
   draw();
 });
