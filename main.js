@@ -8,7 +8,8 @@ const ctx = canvas.getContext('2d');
 
 let canvasId;
 
-const radius = 30;
+// JavaScript
+const radius = Math.min(window.innerWidth, window.innerHeight) * 0.03;
 
 let speed = 3;
 const maxSpeed = 5;
@@ -101,7 +102,7 @@ const drawBall = ball => {
     ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
     ctx.fillStyle = ball.letter === 'К' ? 'blue' : ball.letter === 'Н' ? 'red' : 'gray';
     ctx.fill();
-    ctx.font = "30px Arial";
+    ctx.font = `${radius}px Arial`;
     ctx.fillStyle = "white";
     const textWidth = ctx.measureText(ball.letter).width;
     const textHeight = ctx.measureText('Н').width; // 'M' is used to get an approximate height of a line of text
@@ -121,7 +122,7 @@ const drawBall = ball => {
       image = paper;
     }
     ctx.drawImage(image, ball.x - ball.radius, ball.y - ball.radius, ball.radius * 2, ball.radius * 2);
-    ctx.font = '30px Arial';
+    ctx.font = `${radius}px Arial`;
     ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // transparent color so the letter is not visible
     const textWidth = ctx.measureText(ball.letter).width;
     const textHeight = ctx.measureText('Н').width; // 'M' is used to get an approximate height of a line of text
