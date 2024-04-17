@@ -84,12 +84,22 @@
         .icons {
           flex-direction: column;
         }
+
+        .increase-speed-button {
+          order: -1;
+        }
       }
 
       .select {
         display: flex;
         flex-direction: column;
         gap: 8px;
+      }
+
+      button,
+      select,
+      input {
+        touch-action: manipulation;
       }
     </style>
   </head>
