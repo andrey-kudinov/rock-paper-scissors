@@ -116,9 +116,9 @@ const drawBall = ball => {
     if (ball.letter === 'К') {
       image = rock;
     } else if (ball.letter === 'Н') {
-      image = paper;
-    } else {
       image = scissors;
+    } else {
+      image = paper;
     }
     ctx.drawImage(image, ball.x - ball.radius, ball.y - ball.radius, ball.radius * 2, ball.radius * 2);
     ctx.font = '30px Arial';
